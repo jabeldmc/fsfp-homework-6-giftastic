@@ -24,11 +24,97 @@ var searchTerms = [
 var searchResults = [];
 
 
+/*** App/FUNCTION appAddSearchTerm()
+***/
+
+appAddSearchTerm = function() {
+    console.group( "FUNCTION appAddSearchTerm()" );
+
+    var searchTerm = $( "#app-add-search-term-text" ).val();
+    // console.logValue( "searchTerm" , searchTerm );
+    searchTerms.push( searchTerm );
+
+    console.logValue( "searchTerms" , searchTerms );
+    console.groupEnd();
+}
+
+
+/*** App/FUNCTION appNewAjaxSettings()
+***/
+
+appNewAjaxSettings = function( searchTerm ) {
+    console.group( "FUNCTION appNewAjaxSettings()" );
+    console.logValue( "searchTerm" , searchTerm );
+
+    var urlAPIKey = "O4Rolb03RAK6SiFmndG6Yxs0SXhhmslq";
+    var urlQ = searchTerm.replace( / /g , '+' );
+    var urlLimit = 10;
+    var ajaxRequestURL =
+        "https://api.giphy.com/v1/gifs/search?api_key=$API_KEY&q=$Q&limit=$LIMIT"
+            .replace( "$API_KEY" , urlAPIKey )
+            .replace( "$Q" , urlQ )
+            .replace( "$LIMIT" , urlLimit.toString() );
+    var ajaxSettings = {
+        url : ajaxRequestURL ,
+        method : "GET"
+    };
+
+    console.logValue( "ajaxSettings" , ajaxSettings );
+    console.groupEnd();
+    return ajaxSettings;
+}
+
+
+/*** App/FUNCTION appAddSearchResults()
+***/
+
+appAddSearchResults = function( ajaxResponse ) {
+    console.group( "FUNCTION appAddSearchResults()" );
+    console.logValue( "ajaxResponse" , ajaxResponse );
+
+    ajaxResponse.data.forEach(
+        ( dataElement , dataIndex ) => {
+            searchResults.unshift( dataElement );
+        }
+    );
+
+    console.logValue( "searchResults" , searchResults );
+    console.groupEnd();
+}
+
+
+/*** App/FUNCTION appToggleImageAnimation()
+***/
+
+appToggleImageAnimation = function( imageId ) {
+    console.group( "FUNCTION appToggleImageAnimation()" );
+    console.logValue( "imageId" , imageId );
+
+    var selector = ( '#' + imageId );
+    var imageJQ = $( selector );
+
+    if ( imageJQ.attr( "data-is-animated" ) === "false" ) {
+        imageJQ
+            .attr( "data-is-animated" , "true" )
+            .attr( "src" , imageJQ.attr( "data-animated" ) );
+
+    }
+    else if ( imageJQ.attr( "data-is-animated" ) === "true" ) {
+        imageJQ
+            .attr( "data-is-animated" , "false" )
+            .attr( "src" , imageJQ.attr( "data-still" ) );
+    }
+
+    console.logValue( "searchResults" , searchResults );
+    console.groupEnd();
+}
+
+
 /*** Update UI/FUNCTION UpdateUISearchTerms()
 ***/
 
 var updateUISearchTerms = function() {
-    console.group( "FUNCTION updateUISearchTerms" );
+    console.group( "FUNCTION updateUISearchTerms()" );
 
     var appSearchTermsJQ = $( "#app-search-terms" );
     appSearchTermsJQ.empty();
@@ -95,12 +181,13 @@ var updateUISearchResults = function() {
                     .attr( "id" , ( "app-search-result-$INDEX-rating".replace( "$INDEX" , searchResultIndex.toString() ) ) )
                     .text( "Rating: $RATING".replace( "$RATING" , searchResult.rating  ) );
 
-            appSearchResultJQ.append( appSearchResultImageJQ );
-            appSearchResultJQ.append( appSearchResultIDJQ );
-            appSearchResultJQ.append( appSearchResultTitleJQ );
-            appSearchResultJQ.append( appSearchResultURLJQ );
-            appSearchResultJQ.append( appSearchResultRatingJQ );
-            appSearchResultsJQ.append( appSearchResultJQ );
+            appSearchResultJQ
+                .append( appSearchResultImageJQ )
+                .append( appSearchResultIDJQ )
+                .append( appSearchResultTitleJQ )
+                .append( appSearchResultURLJQ )
+                .append( appSearchResultRatingJQ )
+                .appendTo( appSearchResultsJQ );
         }
     )
 
@@ -117,63 +204,17 @@ var updateUI = function() {
 }
 
 
-/*** App/FUNCTION appCallAPI()
+/*** Event Handlers/FUNCTION handleClickAddSearchTerm()
 ***/
 
-appCallAPI = function( searchTerm ) {
-    console.group( "FUNCTION appCallAPI()" );
-    console.logValue( "searchTerm" , searchTerm );
-
-    var pAPIKey = "O4Rolb03RAK6SiFmndG6Yxs0SXhhmslq";
-    var pQ = searchTerm.replace( / /g , '+' );
-    var pLimit = 10;
-    var ajaxRequestURL =
-        "https://api.giphy.com/v1/gifs/search?api_key=$API_KEY&q=$Q&limit=$LIMIT"
-            .replace( "$API_KEY" , pAPIKey )
-            .replace( "$Q" , pQ )
-            .replace( "$LIMIT" , pLimit.toString() );
-    var ajaxRequest = {
-        url : ajaxRequestURL ,
-        method : "GET"
-    }
-
-    $.ajax( ajaxRequest )
-        .then(
-            ( response ) => {
-                console.group( "$.ajax().then( ( response ) => {} )" );
-                console.logValue( "response" , response );
-
-                // searchResults = response.data;
-                response.data.forEach(
-                    ( dataElement , dataIndex ) => {
-                        searchResults.unshift( dataElement );
-                    }
-                );
-
-                updateUISearchResults();
-
-                console.groupEnd();
-            }
-        );
-
-    console.log( "appCallAPI done" );
-    console.groupEnd();
-}
-
-
-/*** Event Handlers/FUNCTION handleClickAddSerchTerm()
-***/
-
-handleClickAddSerchTerm = function( event ) {
-    console.group( "FUNCTION handleClickAddSerchTerm()" );
+handleClickAddSearchTerm = function( event ) {
+    console.group( "FUNCTION handleClickAddSearchTerm()" );
     console.logValue( "event.type" , event.type );
     console.logValue( "event.currentTarget.id" , event.currentTarget.id );
+    console.logValue( "$( this ).attr(  \"id\" )" , $( this ).attr( "id" ) );
 
-    // prevent form from submitting
     event.preventDefault();
-
-    var searchTerm = $( "#app-add-search-term-text" ).val();
-    searchTerms.push( searchTerm );
+    appAddSearchTerm();
     updateUISearchTerms();
 
     console.groupEnd();
@@ -187,12 +228,17 @@ handleClickSearchTerm = function( event ) {
     console.group( "FUNCTION handleClickSearchTerm()" );
     console.logValue( "event.type" , event.type );
     console.logValue( "event.currentTarget.id" , event.currentTarget.id );
+    console.logValue( "$( this ).attr(  \"id\" )" , $( this ).attr( "id" ) );
 
-    var selector = ( '#' + event.currentTarget.id );
-    var searchTerm =
-        $( selector )
-            .attr( "data-search-term" );
-    appCallAPI( searchTerm );
+    var searchTerm = $( this ).attr( "data-search-term" );
+    var ajaxSettings = appNewAjaxSettings( searchTerm );
+    $.ajax( ajaxSettings )
+        .then(
+            ( ajaxResponse ) => {
+                appAddSearchResults( ajaxResponse );
+                updateUISearchResults();
+            }
+         );
 
     console.groupEnd();
 }
@@ -205,22 +251,10 @@ handleClickSearchResult = function( event ) {
     console.group( "FUNCTION handleClickSearchResult()" );
     console.logValue( "event.type" , event.type );
     console.logValue( "event.currentTarget.id" , event.currentTarget.id );
+    console.logValue( "$( this ).attr(  \"id\" )" , $( this ).attr( "id" ) );
 
-    var selector = ( '#' + event.currentTarget.id );
-    var appSearchResultImageJQ = $( selector );
-    console.logValue( "data-is-animated" , appSearchResultImageJQ.attr( "data-is-animated" ) );
-
-    if ( appSearchResultImageJQ.attr( "data-is-animated" ) === "false" ) {
-        appSearchResultImageJQ
-            .attr( "data-is-animated" , "true" )
-            .attr( "src" , appSearchResultImageJQ.attr( "data-animated" ) );
-
-    }
-    else if ( appSearchResultImageJQ.attr( "data-is-animated" ) === "true" ) {
-        appSearchResultImageJQ
-            .attr( "data-is-animated" , "false" )
-            .attr( "src" , appSearchResultImageJQ.attr( "data-still" ) );
-    }
+    var eventTargetId = $( this ).attr( "id" );
+    appToggleImageAnimation( eventTargetId );
 
     console.groupEnd();
 }
@@ -233,11 +267,9 @@ handleReady = function( event ) {
     console.group( "FUNCTION handleReady()" );
 
     // register event handlers
-    $( "#app-add-search-term-submit" ).on( "click" , handleClickAddSerchTerm );
+    $( "#app-add-search-term-submit" ).on( "click" , handleClickAddSearchTerm );
     $( document ).on( "click" , ".app-search-term-button" , handleClickSearchTerm );
     $( document ).on( "click" , ".app-search-result-image" , handleClickSearchResult );
-
-
     updateUI();
 
     console.groupEnd();
