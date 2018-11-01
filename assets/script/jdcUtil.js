@@ -6,7 +6,7 @@
 ***/
 
 if ( Array.prototype.equals ) {
-    console.warn( "Overriding existing implementation of `Array.prototype.equals()`." );
+    console.warn( 'Overriding existing implementation of \'Array.prototype.equals()\'.' );
 }
 Array.prototype.equals = function( other ) {
     return (
@@ -24,42 +24,42 @@ Array.prototype.equals = function( other ) {
 ***/
 
 if ( console.logValue ) {
-    console.warn( "Overriding existing implementation of `console.logValue()`." );
+    console.warn( 'Overriding existing implementation of \'console.logValue()\'.' );
 }
 console.logValue = function( label , value ) {
-    if ( typeof value === "number" ) {
-        var typeString = ( "[" + ( typeof value ) + "]" );
-        // var valueString = value.toString();
+    console.log( ( Object.prototype.toString.call( value ) ) , label , value );
+    /*
+    if ( typeof value === 'number' ) {
+        console.groupCollapsed( `[${ ( typeof value ) }] ${ label }` );
+        console.dir( value );
+        console.groupEnd();
     }
-    else if ( typeof value === "boolean" ) {
-        var typeString = ( "[" + ( typeof value ) + "]" );
-        // var valueString = value.toString();
+    else if ( typeof value === 'boolean' ) {
+        console.groupCollapsed( `[${ ( typeof value ) }] ${ label }` );
+        console.dir( value );
+        console.groupEnd();
     }
-    else if ( typeof value === "string" ) {
-        var typeString = ( "[" + ( typeof value ) + "]" );
-        // var valueString = ( "\"" + value + "\"" );
+    else if ( typeof value === 'string' ) {
+        console.groupCollapsed( `[${ ( typeof value ) }] ${ label }` );
+        console.dir( value );
+        console.groupEnd();
     }
     else if ( value === null ) {
-        var typeString = Object.prototype.toString.call( value );
-        // var valueString = "null";
+        console.groupCollapsed( `[null] ${ label }` );
+        console.dir( value );
+        console.groupEnd();
     }
     else if ( value === undefined ) {
-        var typeString = Object.prototype.toString.call( value );
-        // var valueString = "undefined";
+        console.groupCollapsed( `[undefined] ${ label }` );
+        console.dir( value );
+        console.groupEnd();
     }
     else {
-        var typeString = Object.prototype.toString.call( value );
-        if ( typeString === "[object Object]" ) {
-            typeString = "[object " + value.constructor.name + "]"
-        }
-        // var valueString = JSON.stringify( value );g
-        var value = JSON.parse( JSON.stringify( value ) );
+        console.groupCollapsed( `${ Object.prototype.toString.call( value ) } ${ label }` );
+        console.dir( value );
+        console.groupEnd();
     }
-    console.log(
-        typeString ,
-        label ,
-        value
-    );
+    */
 }
 
 
@@ -70,71 +70,72 @@ var JdcUtil = function() {
 };
 
 
-/*** FUNCTION getRandomNumber()
+/*** FUNCTION randomNumber()
 ***/
 
-JdcUtil.prototype.getRandomNumber = function( cardinality ) {
-    // console.group( "jdcUtil.getRandomNumber()" );
-    // console.logValue( "cardinality" , cardinality );
+JdcUtil.prototype.randomNumber = function( cardinality ) {
+    // console.group( 'jdcUtil.randomNumber()' );
+    // console.logValue( 'cardinality' , cardinality );
 
     // check cardinatliy
-    if ( cardinality === undefined ) {
-        throw new RangeError( "Parameter 'cardinality' is required." );
-    };
+    if ( !cardinality ) {
+        throw new RangeError( 'Parameter \'cardinality\' is required.' );
+    }
+    if ( cardinality < 1 ) {
+        throw new RangeError( 'Parameter \'cardinality\' should be greater than 0.' )
+    }
 
     var randomNumber = ( Math.floor( Math.random() * cardinality ) );
     return randomNumber;
 
-    // console.logValue( "cardinality" , cardinality );
+    // console.logValue( 'cardinality' , cardinality );
     // console.groupEnd();
 };
 
 
-/*** FUNCTION getRandomNumbers()
+/*** FUNCTION randomNumbers()
 ***/
-JdcUtil.prototype.getRandomNumbers = function( length , cardinality , flagUnique ) {
-    // console.group( "jdcUtil.getRandomNumbers()" );
-    // console.logValue( "cardinality" , cardinality  );
-    // console.logValue( "length" , length );
-    // console.logValue( "flagUnique" , flagUnique );
+JdcUtil.prototype.randomNumbers = function( length , cardinality , flagUnique ) {
+    // console.group( 'jdcUtil.randomNumbers()' );
+    // console.logValue( 'cardinality' , cardinality  );
+    // console.logValue( 'length' , length );
+    // console.logValue( 'flagUnique' , flagUnique );
 
-    // check length
+    // check cardinatliy
+    if ( !cardinality ) {
+        throw new RangeError( 'Parameter \'cardinality\' is required.' );
+    }
+    if ( cardinality < 1 ) {
+        throw new RangeError( 'Parameter \'cardinality\' should be greater than 0.' )
+    }
     if (
         ( flagUnique === true ) &&
         ( cardinality < length )
     ) {
-        throw new RangeError( "Parameter 'cardinality' should be equal or greater than parameter 'length'." );
-    };
+        throw new RangeError( 'Parameter \'cardinality\' should be equal or greater than parameter \'length\'.' );
+    }
 
     // default flagUnique
     flagUnique = ( ( flagUnique !== undefined ) && ( flagUnique === true ) );
-    // console.logValue( "flagUnique" , flagUnique );
+    // console.logValue( 'flagUnique' , flagUnique );
 
     // check flagUnique
     if ( flagUnique === false ) {
         // allow duplicate numbers
         var randomNumbers = [];
 
-        for (
-            var randomNumberCount = 0 ;
-            randomNumberCount < length ;
-            randomNumberCount++
-        ) {
-            var randomNumber = this.getRandomNumber( cardinality );
+        while ( randomNumbers.length < length ) {
+            var randomNumber = this.randomNumber( cardinality );
             randomNumbers.push( randomNumber );
-        };
+        }
     }
     else {
         // numbers should be unique
         var randomNumbers = [];
         var blackList = [];
 
-        for (
-            var randomNumberCount = 0 ;
-            randomNumberCount < length ;
-            randomNumberCount++
-        ) {
-            var randomNumber = this.getRandomNumber( cardinality );
+        while ( randomNumbers.length < length ) {
+            var randomNumber = this.randomNumber( cardinality );
 
             // ensure unique value
             while( blackList.indexOf( randomNumber ) > -1 ) {
@@ -142,15 +143,15 @@ JdcUtil.prototype.getRandomNumbers = function( length , cardinality , flagUnique
                 // go "around the clock"
                 if ( randomNumber === cardinality ) {
                     randomNumber = 0;
-                };
-            };
+                }
+            }
 
             randomNumbers.push( randomNumber );
             blackList.push( randomNumber );
-        };
-    };
+        }
+    }
 
-    // console.logValue( "randomNumbers" , randomNumbers );
+    // console.logValue( 'randomNumbers' , randomNumbers );
     // console.groupEnd();
     return randomNumbers;
 };

@@ -1,9 +1,16 @@
 # fsfp-homework-6-giphy-api
 
-Full Stack Flex Program Homework 06: GIPHY API
+Full Stack Flex Program Homework 06: Giftastic!
 
 
 # History
+
+
+## Build 4
+
+* Build Bootstrap UI.
+* Favorites are saved via `localStorage`.
+* Clean up code (especially promises handling).
 
 
 ## Build 3

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Title -->
-    <title>Formula 1 GifTastic</title>
+    <title>Giftastic!</title>
 
     <!-- jQuery -->
     <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous" defer></script> -->
@@ -32,11 +32,158 @@
     <!-- External Javascript -->
     <!-- <script src="assets/script/jdc-util.js" async></script> -->
     <script src="assets/script/jdcUtil.js" defer></script>
+    <script src="assets/script/GiphyApi.js" defer></script>
     <script src="assets/script/GiphyAppModel.js" defer></script>
     <script src="assets/script/GiphyAppUI.js" defer></script>
+    <script src="assets/script/GiphyAppHandler.js" defer></script>
 </head>
 
 <body>
+
+    <!-- Container: Body -->
+    <div id="body" class="container-fluid p-4">
+
+        <!-- Row 1: Game Title -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="jumbotron p-4 mb-0 text-center">
+                    <h1 class="display-3">Giftastic!</h1>
+                </div>
+            </div>
+        </div>
+        <!-- Row 1: Game Title -->
+
+        <!-- Row 2: Search Terms, Search Results , Favorites -->
+        <div class="row mb-4">
+
+            <!-- Column 2,1: Search Terms -->
+            <div class="col-3">
+
+                <!-- Search Terms -->
+                <div id="app-search-terms-container" class="alert alert-secondary p-3 mb-0">
+
+                    <h5 id="app-search-terms-header" class="mb-2">Search Terms</h5>
+                    <hr class="mt-2 mb-3">
+
+                    <form id="app-search-terms-add">
+                        <div class="form-row mb-1">
+                            <input id="app-search-terms-add-text" type="text" class="form-control">
+                        </div>
+                        <div class="form-row justify-content-end">
+                            <input id="app-search-terms-add-submit" type="submit" value="Add" class="btn btn-primary">
+                        </div>
+                    </form>
+                    <hr class="mt-2 mb-3">
+
+                    <div id="app-search-terms">
+                    </div>
+
+                </div>
+                <!-- Search Terms -->
+
+            </div>
+            <!-- Column 2,1: Search Terms -->
+
+            <!-- Column 2,2: Search Results -->
+            <div class="col-6">
+
+                <!-- Search Results -->
+                <div id="app-search-results-container" class="alert alert-secondary p-3 mb-0">
+
+                    <h5 id="app-search-results-header" class="mb-2">Search Results</h5>
+                    <hr class="mt-2 mb-3">
+
+                    <div id="app-search-results" class="card-columns">
+
+                        <!-- Sample Card -->
+                        <!--
+                        <div id="app-search-result-5" class="card mb-3">
+                            <img id="app-search-result-5-image" class="app-search-result-image card-img-top" src="https://media3.giphy.com/media/E7pfiyOeQTgek/200w_s.gif" alt="something">
+                            <div id="app-search-result-5-title" class="card-header p-2">
+                                <h6 class="card-title m-0">Animated GIF</h6>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="app-search-result-5-id" class="list-group-item p-2">
+                                    <p class="card-text m-0"><small class="text-muted">ID</small></p>
+                                    <p class="card-text m-0">E7pfiyOeQTgek</p>
+                                </li>
+                                <li id="app-search-result-5-id" class="list-group-item p-2">
+                                    <p class="card-text m-0"><small class="text-muted">URL</small></p>
+                                    <p class="card-text m-0"><a href="https://giphy.com/gifs/E7pfiyOeQTgek" target="_new">https://giphy.com/gifs/E7pfiyOeQTgek</a></p>
+                                </li>
+                                <li id="app-search-result-5-rating" class="list-group-item p-2">
+                                    <p class="card-text m-0"><small class="text-muted">Rating</small></p>
+                                    <p class="card-text m-0">g</p>
+                                </li>
+                            </ul>
+                            <div id="app-search-result-5-add-favorite" class="app-search-result-add-favorite btn btn-block btn-primary">Add Favorite</div>
+                        </div>
+                        -->
+                        <!-- Sample Card -->
+
+                    </div>
+
+                </div>
+                <!-- Search Results -->
+
+            </div>
+            <!-- Column 2,2: Search Results -->
+
+            <!-- Column 2,3: Favorites -->
+            <div class="col-3">
+
+                <!-- Favorites -->
+                <div id="app-favorites-container" class="alert alert-secondary p-3 mb-0">
+
+                    <h5 id="app-favorites-header" class="mb-2">Favorites</h5>
+                    <hr class="mt-2 mb-3">
+
+                    <div id="app-favorites">
+
+                        <!-- Sample Card -->
+                        <!--
+                        <div id="app-favorite-5" class="card mb-3">
+                            <img id="app-favorite-5-image" class="app-favorite-image card-img-top" src="https://media3.giphy.com/media/E7pfiyOeQTgek/200w_s.gif" alt="something">
+                            <div id="app-favorite-5-title" class="card-header p-2">
+                                <h6 class="card-title m-0">Animated GIF</h6>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="app-favorite-5-id" class="list-group-item p-2">
+                                    <p class="card-text m-0"><small class="text-muted">ID</small></p>
+                                    <p class="card-text m-0">E7pfiyOeQTgek</p>
+                                </li>
+                                <li id="app-favorite-5-id" class="list-group-item p-2">
+                                    <p class="card-text m-0"><small class="text-muted">URL</small></p>
+                                    <p class="card-text m-0"><a href="https://giphy.com/gifs/E7pfiyOeQTgek" target="_new">https://giphy.com/gifs/E7pfiyOeQTgek</a></p>
+                                </li>
+                                <li id="app-favorite-5-rating" class="list-group-item p-2">
+                                    <p class="card-text m-0"><small class="text-muted">Rating</small></p>
+                                    <p class="card-text m-0">g</p>
+                                </li>
+                            </ul>
+                            <div id="app-favorite-5-remove-favorite" class="app-favorite-remove-favorite btn btn-block btn-primary">Remove From Favorites</div>
+                        </div>
+                        -->
+                        <!-- Sample Card -->
+
+                    </div>
+
+                </div>
+                <!-- Favorites -->
+
+            </div>
+            <!-- Column 2,3: Favorites -->
+
+
+
+        </div>
+        <!-- Row 2: Messages, Timer, Score -->
+
+    </div>
+    <!-- Container: Body -->
+
+
+    <!--
     <h1>Search Terms</h1>
     <form id="app-add-search-term">
         <input id="app-add-search-term-text" type="text">
@@ -45,14 +192,20 @@
     </form>
     <div id="app-search-terms">
     </div>
+    -->
 
+    <!--
     <h1>Favorites</h1>
     <div id="app-favorites">
+        <input id="app-favorites-clear-button" type="button" value="Clear">
     </div>
+    -->
 
+    <!--
     <h1>Search Results</h1>
     <div id="app-search-results">
     </div>
+    -->
 
     <!-- Internal Javascript -->
     <!-- <script></script> -->
